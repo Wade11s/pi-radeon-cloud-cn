@@ -1,5 +1,13 @@
-import { createProvider, envApiKeyAuth, type Model } from "@earendil-works/pi-ai";
-import { openAICompletionsApi } from "@earendil-works/pi-ai/api/openai-completions.lazy";
+// Import from the /compat entrypoint: pi's extension loader aliases exactly this
+// specifier to its bundled pi-ai copy, and the package's real exports map also
+// exposes it, so resolution works both at runtime (installed packages without
+// node_modules) and under tsc in this repo.
+import {
+	createProvider,
+	envApiKeyAuth,
+	openAICompletionsApi,
+	type Model,
+} from "@earendil-works/pi-ai/compat";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const PROVIDER_ID = "radeon-cloud-cn";
