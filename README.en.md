@@ -4,6 +4,32 @@ English | [简体中文](./README.md)
 
 An **AMD Radeon Cloud CN** provider for [pi](https://github.com/earendil-works/pi). Radeon Cloud's shared model endpoint is compatible with the OpenAI Chat Completions API.
 
+## Quickstart
+
+1. Install the extension:
+
+```bash
+pi install git:github.com/Wade11s/pi-radeon-cloud-cn
+```
+
+2. Start pi and sign in:
+
+```text
+/login radeon-cloud-cn
+```
+
+3. Pick a model:
+
+```text
+/model
+```
+
+You can then start chatting immediately. You can also select a model from the command line:
+
+```bash
+pi --provider radeon-cloud-cn --model DeepSeek-V4-Flash-0731
+```
+
 ## Model catalog
 
 The extension does not hard-code the shared model catalog. After an API key is configured, pi requests the official endpoint whenever it refreshes dynamic model catalogs:
@@ -35,10 +61,10 @@ Token Factory's **Dedicated Model APIs** use deployment-specific endpoints and c
 
 ## Installation
 
-Install from npm (recommended):
+Install it from GitHub:
 
 ```bash
-pi install npm:pi-radeon-cloud-cn
+pi install git:github.com/Wade11s/pi-radeon-cloud-cn
 ```
 
 Load the extension temporarily from a local checkout:
@@ -47,13 +73,7 @@ Load the extension temporarily from a local checkout:
 pi -e /path/to/pi-radeon-cloud-cn
 ```
 
-Install it from GitHub:
-
-```bash
-pi install git:github.com/Wade11s/pi-radeon-cloud-cn
-```
-
-You can also install a local checkout:
+Install a local checkout:
 
 ```bash
 pi install /path/to/pi-radeon-cloud-cn

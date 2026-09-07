@@ -4,6 +4,32 @@
 
 为 [pi](https://github.com/earendil-works/pi) 添加 **AMD Radeon Cloud CN** Provider。Radeon Cloud 的共享模型接口兼容 OpenAI Chat Completions API。
 
+## 快速上手
+
+1. 安装插件：
+
+```bash
+pi install git:github.com/Wade11s/pi-radeon-cloud-cn
+```
+
+2. 启动 pi 并登录：
+
+```text
+/login radeon-cloud-cn
+```
+
+3. 选择模型：
+
+```text
+/model
+```
+
+完成后即可直接对话。也可以用命令行指定模型：
+
+```bash
+pi --provider radeon-cloud-cn --model DeepSeek-V4-Flash-0731
+```
+
 ## 模型目录
 
 插件不硬编码共享模型目录。配置 API Key 后，pi 会在刷新模型目录时请求官方接口：
@@ -35,10 +61,10 @@ Token Factory 中的 **Dedicated Model APIs** 使用部署实例自己的地址�
 
 ## 安装
 
-从 npm 安装（推荐）：
+从 GitHub 安装：
 
 ```bash
-pi install npm:pi-radeon-cloud-cn
+pi install git:github.com/Wade11s/pi-radeon-cloud-cn
 ```
 
 从本地目录临时加载：
@@ -47,13 +73,7 @@ pi install npm:pi-radeon-cloud-cn
 pi -e /path/to/pi-radeon-cloud-cn
 ```
 
-从 GitHub 安装：
-
-```bash
-pi install git:github.com/Wade11s/pi-radeon-cloud-cn
-```
-
-也可以安装本地检出目录：
+安装本地检出目录：
 
 ```bash
 pi install /path/to/pi-radeon-cloud-cn
