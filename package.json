@@ -11,6 +11,17 @@
     "openai-compatible"
   ],
   "license": "MIT",
+  "homepage": "https://github.com/Wade11s/pi-radeon-cloud-cn#readme",
+  "bugs": {
+    "url": "https://github.com/Wade11s/pi-radeon-cloud-cn/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wade11s/pi-radeon-cloud-cn.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "index.ts",
     "README.md",

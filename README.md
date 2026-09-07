@@ -35,13 +35,25 @@ Token Factory 中的 **Dedicated Model APIs** 使用部署实例自己的地址�
 
 ## 安装
 
+从 npm 安装（推荐）：
+
+```bash
+pi install npm:pi-radeon-cloud-cn
+```
+
 从本地目录临时加载：
 
 ```bash
 pi -e /path/to/pi-radeon-cloud-cn
 ```
 
-安装为全局 pi package：
+从 GitHub 安装：
+
+```bash
+pi install git:github.com/Wade11s/pi-radeon-cloud-cn
+```
+
+也可以安装本地检出目录：
 
 ```bash
 pi install /path/to/pi-radeon-cloud-cn

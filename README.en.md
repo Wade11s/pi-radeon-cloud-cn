@@ -35,13 +35,25 @@ Token Factory's **Dedicated Model APIs** use deployment-specific endpoints and c
 
 ## Installation
 
+Install from npm (recommended):
+
+```bash
+pi install npm:pi-radeon-cloud-cn
+```
+
 Load the extension temporarily from a local checkout:
 
 ```bash
 pi -e /path/to/pi-radeon-cloud-cn
 ```
 
-Or install it globally as a pi package:
+Install it from GitHub:
+
+```bash
+pi install git:github.com/Wade11s/pi-radeon-cloud-cn
+```
+
+You can also install a local checkout:
 
 ```bash
 pi install /path/to/pi-radeon-cloud-cn
