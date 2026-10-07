@@ -27,7 +27,7 @@ pi install git:github.com/Wade11s/pi-radeon-cloud-cn
 You can then start chatting immediately. You can also select a model from the command line:
 
 ```bash
-pi --provider radeon-cloud-cn --model DeepSeek-V4-Flash-0731
+pi --provider radeon-cloud-cn --model DeepSeek-V4-Flash
 ```
 
 ## Model catalog
@@ -48,14 +48,33 @@ Every returned `id` is registered as `radeon-cloud-cn/<model-id>`. The extension
 
 The official documentation states that models can be added or retired at any time and that `GET /models` is the source of truth for the shared catalog. pi persists the most recently fetched catalog. If neither a cached catalog nor a valid API key is available, no models from this provider will be shown.
 
-At the time this README was reviewed, the Token Factory page displayed these four **Public Free Model APIs** cards:
+As of this README's review (2026-10), the official documentation lists nine **Public Free Model APIs**:
 
+- `DeepSeek-V4-Flash` (weights: DeepSeek-V4-Flash-0731)
 - `DeepSeek-V4-Flash-Vision-Exp`
-- `DeepSeek-V4-Flash-0731`
+- `DeepSeek-V4.1-Flash`
 - `Qwen3.8-Flash-Next`
-- `MiniCPM5-1B`
+- `Qwen3.8-27B`
+- `GLM-5.3-Flash`
+- `MiMo-V2.6-Flash`
+- `MiniCPM5-2B`
+- `MinerU2.5-Pro` (document parsing over `POST /v1/ocr` only, not chat completions; skipped by this extension)
 
-That page can be updated at a different time from other documentation pages, so the extension does not treat this list as its runtime catalog.
+That list can change at any time, so the extension does not treat it as its runtime catalog.
+
+### Thinking tiers
+
+Radeon Cloud controls thinking length with `reasoning_effort`, but each model accepts only a subset of the tiers (`none`, `minimal`, `low`, `medium`, `high`, `xhigh`, `max`), and only `low` and `medium` are documented as working everywhere. The extension maps pi's thinking levels to the values each model actually accepts, to avoid 400s:
+
+| Model | Tiers |
+| --- | --- |
+| `DeepSeek-V4-Flash`, `DeepSeek-V4-Flash-Vision-Exp`, `DeepSeek-V4.1-Flash` | All, including `none` (explicitly off) |
+| `Qwen3.8-Flash-Next` | `none`, `low`, `medium`, `xhigh` |
+| `Qwen3.8-27B` | `low`, `medium`, `xhigh` (thinks by default; cannot be turned off) |
+| `GLM-5.3-Flash` | `low`, `medium`, `high` (thinks by default; cannot be turned off) |
+| `MiMo-V2.6-Flash` | `none`, `low`, `medium` |
+| `MiniCPM5-2B` | No thinking |
+| Any other model | `low`, `medium` |
 
 Token Factory's **Dedicated Model APIs** use deployment-specific endpoints and credentials. They are not part of the shared API above and are therefore not registered by this provider.
 
@@ -109,7 +128,7 @@ pi -e . --list-models
 Example with an explicitly selected model:
 
 ```bash
-pi --provider radeon-cloud-cn --model DeepSeek-V4-Flash-0731
+pi --provider radeon-cloud-cn --model DeepSeek-V4-Flash
 ```
 
 Refresh pi's dynamic model catalogs manually with:
@@ -126,6 +145,10 @@ POST https://developer.amd.com.cn/radeon/api/v1/chat/completions
 Authorization: Bearer <API_KEY>
 Content-Type: application/json
 ```
+
+## Limits
+
+Typical values for the shared Model APIs: 30 requests per minute per API key, 120 per minute per IP, 8 concurrent requests per key, plus a per-account daily spend cap (day boundary `Asia/Shanghai`). Exceeding them returns 429 with `Retry-After`. Fenced-instance requests, instance launches, and sign-in have their own separate limits — see the official [Rate limits](https://amd-aim.github.io/radeon-cloud-docs/api/rate-limits/) page.
 
 ## Development
 

@@ -27,7 +27,7 @@ pi install git:github.com/Wade11s/pi-radeon-cloud-cn
 完成后即可直接对话。也可以用命令行指定模型：
 
 ```bash
-pi --provider radeon-cloud-cn --model DeepSeek-V4-Flash-0731
+pi --provider radeon-cloud-cn --model DeepSeek-V4-Flash
 ```
 
 ## 模型目录
@@ -48,14 +48,33 @@ Authorization: Bearer <API_KEY>
 
 官方文档明确说明模型可能随时新增或下架，`GET /models` 是共享模型目录的唯一事实来源。pi 会持久化最近一次成功获取的目录；如果既没有缓存，也没有可用的 API Key，则不会显示该 Provider 的模型。
 
-撰写本文时，Token Factory 页面展示了以下 4 个 **Public Free Model APIs** 卡片：
+撰写本文时（2026-10），官方文档的 Public Free Model APIs 共列出 9 个模型：
 
+- `DeepSeek-V4-Flash`（权重为 DeepSeek-V4-Flash-0731）
 - `DeepSeek-V4-Flash-Vision-Exp`
-- `DeepSeek-V4-Flash-0731`
+- `DeepSeek-V4.1-Flash`
 - `Qwen3.8-Flash-Next`
-- `MiniCPM5-1B`
+- `Qwen3.8-27B`
+- `GLM-5.3-Flash`
+- `MiMo-V2.6-Flash`
+- `MiniCPM5-2B`
+- `MinerU2.5-Pro`（仅 `POST /v1/ocr` 文档解析接口，不走 chat completions，插件会跳过）
 
-该网页展示可能与其他文档页面存在更新时差，因此插件不会将这份列表作为运行时目录。
+该列表可能随时变动，因此插件不会将其作为运行时目录。
+
+### 思考分级
+
+Radeon Cloud 用 `reasoning_effort` 控制思考长度，但每个模型接受的档位不同（`none`、`minimal`、`low`、`medium`、`high`、`xhigh`、`max` 的子集），官方只保证 `low` 和 `medium` 在所有模型上通用。插件按模型族把 pi 的思考档位映射到该模型确实接受的取值，避免 400：
+
+| 模型 | 可用档位 |
+| --- | --- |
+| `DeepSeek-V4-Flash`、`DeepSeek-V4-Flash-Vision-Exp`、`DeepSeek-V4.1-Flash` | 全部，含 `none`（显式关闭） |
+| `Qwen3.8-Flash-Next` | `none`、`low`、`medium`、`xhigh` |
+| `Qwen3.8-27B` | `low`、`medium`、`xhigh`（默认即思考，无法显式关闭） |
+| `GLM-5.3-Flash` | `low`、`medium`、`high`（默认即思考，无法显式关闭） |
+| `MiMo-V2.6-Flash` | `none`、`low`、`medium` |
+| `MiniCPM5-2B` | 不支持思考 |
+| 其他未列出的模型 | `low`、`medium` |
 
 Token Factory 中的 **Dedicated Model APIs** 使用部署实例自己的地址和凭据，不属于上述共享 API，因而不会由这个 Provider 注册。
 
@@ -109,7 +128,7 @@ pi -e . --list-models
 指定模型示例：
 
 ```bash
-pi --provider radeon-cloud-cn --model DeepSeek-V4-Flash-0731
+pi --provider radeon-cloud-cn --model DeepSeek-V4-Flash
 ```
 
 手动刷新 pi 的动态模型目录：
@@ -126,6 +145,10 @@ POST https://developer.amd.com.cn/radeon/api/v1/chat/completions
 Authorization: Bearer <API_KEY>
 Content-Type: application/json
 ```
+
+## 限额
+
+共享 Model API 的官方典型值：每 API Key 30 次/分钟、每 IP 120 次/分钟、每 Key 8 个并发请求，另有按账号的每日花费上限（日界为 `Asia/Shanghai`）。超限返回 429 并带 `Retry-After`。围栏内请求、实例启动与登录另有独立限流，详见[官方 Rate limits 文档](https://amd-aim.github.io/radeon-cloud-docs/api/rate-limits/)。
 
 ## 开发
 

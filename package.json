@@ -1,6 +1,6 @@
 {
   "name": "pi-radeon-cloud-cn",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AMD Radeon Cloud CN provider extension for pi",
   "type": "module",
   "keywords": [
@@ -41,8 +41,8 @@
     "@earendil-works/pi-coding-agent": "*"
   },
   "devDependencies": {
-    "@earendil-works/pi-ai": "0.85.1",
-    "@earendil-works/pi-coding-agent": "0.85.1",
+    "@earendil-works/pi-ai": "1.0.4",
+    "@earendil-works/pi-coding-agent": "1.0.4",
     "typescript": "^5.9.3"
   }
 }

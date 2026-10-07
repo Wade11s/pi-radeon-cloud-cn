@@ -48,8 +48,13 @@ function pricePerMillion(value?: string): number {
 function thinkingLevels(id: string, reasoning: boolean): RadeonModel["thinkingLevelMap"] {
 	if (!reasoning) return undefined;
 
-	if (id.toLowerCase().includes("deepseek-v4-flash")) {
+	const model = id.toLowerCase();
+
+	// DeepSeek-V4-Flash, DeepSeek-V4-Flash-Vision-Exp and DeepSeek-V4.1-Flash accept
+	// every documented tier, including "none" to switch thinking off explicitly.
+	if (model.startsWith("deepseek-v4")) {
 		return {
+			off: "none",
 			minimal: "minimal",
 			low: "low",
 			medium: "medium",
@@ -59,7 +64,47 @@ function thinkingLevels(id: string, reasoning: boolean): RadeonModel["thinkingLe
 		};
 	}
 
-	// Radeon Cloud documents low and medium as the portable reasoning tiers.
+	// Qwen3.8-Flash-Next thinks by default and accepts none, low, medium and xhigh
+	// (its default tier). Qwen3.8-27B shares the tiers but rejects "none".
+	if (model.startsWith("qwen3.8")) {
+		return {
+			off: model.includes("27b") ? null : "none",
+			minimal: null,
+			low: "low",
+			medium: "medium",
+			high: null,
+			xhigh: "xhigh",
+			max: null,
+		};
+	}
+
+	// GLM-5.3-Flash thinks by default and accepts low, medium and high, but rejects
+	// xhigh. MiMo-V2.6-Flash is not tier-calibrated but accepts "none" to disable.
+	if (model.startsWith("glm-")) {
+		return {
+			minimal: null,
+			low: "low",
+			medium: "medium",
+			high: "high",
+			xhigh: null,
+			max: null,
+		};
+	}
+
+	if (model.startsWith("mimo-")) {
+		return {
+			off: "none",
+			minimal: null,
+			low: "low",
+			medium: "medium",
+			high: null,
+			xhigh: null,
+			max: null,
+		};
+	}
+
+	// Default: Radeon Cloud documents low and medium as the portable reasoning tiers
+	// that every thinking model accepts.
 	return {
 		minimal: null,
 		low: "low",
@@ -135,7 +180,11 @@ export default function registerRadeonCloudCn(pi: ExtensionAPI): void {
 					throw new Error("Radeon Cloud models response does not contain a data array");
 				}
 
-				return payload.data.filter((entry) => typeof entry.id === "string" && entry.id.length > 0).map(toModel);
+				return payload.data
+					.filter((entry) => typeof entry.id === "string" && entry.id.length > 0)
+					// MinerU2.5-Pro is served over POST /v1/ocr, not chat completions.
+					.filter((entry) => !/mineru|ocr/i.test(entry.id))
+					.map(toModel);
 			},
 			api: openAICompletionsApi(),
 		}),
